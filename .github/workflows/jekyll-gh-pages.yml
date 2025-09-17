@@ -1,0 +1,33 @@
+name: Deploy static site to Pages
+
+on:
+  push:
+    branches: ["main"]     # Se ejecuta cuando haces push a main
+  workflow_dispatch:        # Permite ejecutarlo manualmente
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 1. Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: ⚙️ 2. Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: 📦 3. Empaquetar carpeta public
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public       # repo
+
+      - name: 🚀 4. Desplegar en GitHub Pages
+        uses: actions/deploy-pages@v4
